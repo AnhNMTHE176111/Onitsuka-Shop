@@ -1,27 +1,65 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Header = () => {
+
+const Header = ({ onSearch }) => {
+    const [searchedValue, setSearchedValue] = useState('');
+    const [user, setUser] = useState({});
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const cookieArray = document.cookie.split(';');
+        const userIdObject = cookieArray.filter(cookie => cookie.includes('userId'))[0];
+        if(userIdObject) {
+            const userId = userIdObject.split('=')[1];
+            fetch('http://localhost:9999/user/' + userId)
+            .then((result) => {
+                return result.json();
+            })
+            .then((result) => {
+                setUser(result);
+            })
+            .catch((err) => {
+                console.log('error', err);
+            });
+        }
+    }, [])
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        onSearch(searchedValue);
+    }
+
+    function logOut() {
+        document.cookie = `userId=;expires=${(new Date()).getTime()}`;
+        setUser({});
+    }
+
+    function changeLocation(location) {
+        navigate(location);
+    }
+
     return (
         <header className="bg-dark">
             <nav className="navbar navbar-expand-md bg-dark flex-column">
                 <div className="container col-12">
 
                     <div className="col-sm-12 col-lg-1 col-md-4 logo">
-                        <a href="home" className="navbar-brand">
+                        <Link to="home" className="navbar-brand">
                             <img src="./images/logo.jpg" alt="" width="100px" />
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="justify-content-center search-field col-sm-12 col-lg-5 col-md-4">
                         <button className="navbar-toggler btn-bar" type="button" data-toggle="collapse"
                             data-target="#collapseExample" aria-expanded="false" aria-label="Toggle navigation"
                             id="btn-bar">
-                            <i className="fa-solid fa-bars " style={{color: '#ffffff', fontSize: '25px'}}></i>
+                            <i className="fa-solid fa-bars " style={{ color: '#ffffff', fontSize: '25px' }}></i>
                         </button>
-                        <form action="" className="form-inline">
+                        <form action="" className="form-inline" onSubmit={e => handleSubmit(e)}>
                             <div className="row">
-
                                 <input type="text" className="form-control mr-sm-2 col-9" placeholder="Search Onitsuka Shoes..."
-                                    id="input-nek" />
+                                    id="input-nek" value={searchedValue} onChange={(e) => setSearchedValue(e.target.value)} />
                                 <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
                                     <i className="fa-solid fa-magnifying-glass"></i>
                                 </button>
@@ -30,15 +68,37 @@ const Header = () => {
                     </div>
 
                     <div className="btn-container col-sm-12 col-lg-2 col-md-4">
-                        <button className="btn btn-outline-primary">
-                            <a href="/signin">Sign in </a>
-                        </button>
-                        <button className="btn btn-outline-info">
-                            <a href="/signup">Sign up </a>
-                        </button>
+                        {
+                            user.id ? (
+                                <>
+                                    <button className="btn btn-outline-warning" onClick={() => navigate(`/cart`)}>
+                                        <i className="fa-solid fa-cart-shopping" style={{marginRight: '3px'}}></i>
+                                    </button>
+                                    {user.role === 'admin' ? (<button onClick={() => changeLocation("/admin")} className="btn btn-outline-primary">
+                                        Admin
+                                    </button>) : (<button onClick={() => changeLocation("/profile")} className="btn btn-outline-primary">
+                                        Profile {user.username}
+                                    </button>)}
+
+                                    <button className="btn btn-outline-info" onClick={logOut}>
+                                        Log Out
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button onClick={() => changeLocation("/signin")} className="btn btn-outline-primary">
+                                        Sign in
+                                    </button>
+                                    <button onClick={() => changeLocation("/signup")} className="btn btn-outline-info">
+                                        Sign up
+                                    </button>
+                                </>
+                            )
+                        }
+
                     </div>
 
-                </div>
+                </div >
 
 
                 <div className="row col-md-12 col-lg-12">
@@ -65,9 +125,9 @@ const Header = () => {
 
 
 
-            </nav>
+            </nav >
 
-        </header>
+        </header >
     )
 }
 
