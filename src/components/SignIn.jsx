@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [msg, setMsg] = useState('');
 
@@ -18,7 +20,6 @@ const SignIn = () => {
     }, [])
 
     function handleSubmit(e) {
-        console.log('click');
         e.preventDefault();
         let username = document.getElementById('username').value;
         let password = document.getElementById('password').value;
@@ -27,10 +28,10 @@ const SignIn = () => {
         if (user) {
             document.cookie = `userId=${user.id};expires=date`
             if (user.role === 'admin') {
-                window.location.href = '/admin';
+                navigate('/admin');
             }
             else {
-                window.location.href = '/';
+                navigate('/');
             }
         }
         else {

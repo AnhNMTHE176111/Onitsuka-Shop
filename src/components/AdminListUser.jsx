@@ -1,28 +1,26 @@
-import { Button, Col, Container, FormControl, Row, Table } from 'react-bootstrap'
-import { useEffect, useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import SideBar from './SideBar';
-import './main.css'
+import { useEffect, useRef, useState } from "react"
+import { Button, Col, Container, FormControl, Row, Table } from "react-bootstrap";
+import SideBar from "./SideBar";
+import { Link, useNavigate } from "react-router-dom";
 
-const AdminListProduct = () => {
-    const [Product, setProduct] = useState([]);
-    const [searchedProduct, setSearchedProduct] = useState([]);
-    const [paggingProducts, setPaggingProducts] = useState([]);
+const AdminListUser = () => {
+    const [users, setUsers] = useState([]);
+    const [searchedUser, setSearchedUser] = useState([]);
+    const [paggingUsers, setPaggingUsers] = useState([]);
     const [pagging, setPagging] = useState([]);
     const [isChange, setIsChange] = useState(true)
     const search = useRef("");
     const navigate = useNavigate();
 
-
     useEffect(() => {
-        fetch("http://localhost:9999/product")
+        fetch("http://localhost:9999/user")
             .then((res) => res.json())
             .then((result) => {
                 if (result.length >= 10) {
-                    setPaggingProducts(result.slice(0, 10))
+                    setPaggingUsers(result.slice(0, 10))
                 }
                 else {
-                    setPaggingProducts(result.slice(0, result.length));
+                    setPaggingUsers(result.slice(0, result.length));
                 }
                 let setpagging = [];
                 let end;
@@ -35,47 +33,48 @@ const AdminListProduct = () => {
                     setpagging = [...setpagging, i]
                 }
                 setPagging(setpagging);
-                setSearchedProduct(result);
-                setProduct(result);
-            });
+                setSearchedUser(result);
+                setUsers(result);
+            })
     }, [isChange])
+
     useEffect(() => {
-        if (searchedProduct.length >= 10) {
-            setPaggingProducts(searchedProduct.slice(0, 10))
+        if (searchedUser.length >= 10) {
+            setPaggingUsers(searchedUser.slice(0, 10))
         }
         else {
-            setPaggingProducts(searchedProduct.slice(0, searchedProduct.length));
+            setPaggingUsers(searchedUser.slice(0, searchedUser.length));
         }
         let setpagging = [];
         let end;
-        if (searchedProduct.length % 10 === 0) {
-            end = searchedProduct.length / 10;
+        if (searchedUser.length % 10 === 0) {
+            end = searchedUser.length / 10;
         } else {
-            end = searchedProduct.length / 10 + 1;
+            end = searchedUser.length / 10 + 1;
         }
         for (let i = 1; i <= end; i++) {
             setpagging = [...setpagging, i]
         }
         setPagging(setpagging);
-    }, [searchedProduct])
+    }, [searchedUser])
 
     const Pagging = (index) => {
-        if (Product.length > index * 10) {
-            setPaggingProducts(searchedProduct.slice((index - 1) * 10, index * 10))
+        if (users.length > index * 10) {
+            setPaggingUsers(searchedUser.slice((index - 1) * 10, index * 10))
         }
-        else setPaggingProducts(searchedProduct.slice((index - 1) * 10, searchedProduct.length))
+        else setPaggingUsers(searchedUser.slice((index - 1) * 10, searchedUser.length))
     }
     const SearchedList = (key) => {
-        const searchedList = Product.filter((p) => {
-            return p.name.toLowerCase().includes(key.current.value.toLowerCase());
+        const searchedList = users.filter((p) => {
+            return p.username.toLowerCase().includes(key.current.value.toLowerCase());
         });
-        setSearchedProduct(searchedList);
+        setSearchedUser(searchedList);
     }
 
-    const deleteProduct = async (id) => {
+    const deleteUser = async (id) => {
         const confirm = window.confirm('Do you want to delete?')
         if (confirm) {
-            fetch(`http://localHost:9999/product/${id}`, {
+            fetch(`http://localhost:9999/user/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -86,6 +85,7 @@ const AdminListProduct = () => {
                 })
         };
     }
+
     return (
         <div>
             <Container fluid>
@@ -93,7 +93,7 @@ const AdminListProduct = () => {
                     <SideBar />
                     <Col md={10} style={{ padding: "0" }}>
                         <div className="topbar">
-                            <h1 className="admin-title">Product Management</h1>
+                            <h1 className="admin-title">User Management</h1>
                         </div>
                         <div className='admin-content'>
                             <Container>
@@ -113,10 +113,10 @@ const AdminListProduct = () => {
                                         </div>
                                     </Col>
                                     <Col md={2}>
-                                        <Link to="/createproduct">
+                                        <Link to="/createUser">
                                             <Button style={{ width: '200px' }}
                                                 className='btn-success'>
-                                                Create a new product
+                                                Create a new user
                                             </Button>
                                         </Link>
                                     </Col>
@@ -132,25 +132,23 @@ const AdminListProduct = () => {
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Name</th>
-                                                    <th>Size</th>
-                                                    <th>Price</th>
+                                                    <th>Role</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
-                                                    paggingProducts.map((p, index) => {
-                                                        const price = parseInt(p.price).toLocaleString('en-US');
+                                                    paggingUsers.map((p, index) => {
                                                         return (
                                                             <tr key={index}>
                                                                 <td>{p.id}</td>
-                                                                <td onClick={() => navigate(`/chi-tiet-san-pham/${p.id}`)}>
-                                                                    {p.name}</td>
-                                                                <td>{p.size}</td>
-                                                                <td>{price} đ</td>
-                                                                <td><Link className="btn btn-danger"
-                                                                    onClick={() => deleteProduct(p.id)}>
-                                                                    Delete</Link></td>
+                                                                <td>{p.username}</td>
+                                                                <td>{p.role}</td>
+                                                                <td>
+                                                                    <Link className="btn btn-danger"
+                                                                        onClick={() => deleteUser(p.id)}>
+                                                                        Delete</Link>
+                                                                </td>
                                                             </tr>
                                                         )
                                                     })
@@ -179,4 +177,5 @@ const AdminListProduct = () => {
         </div >
     )
 }
-export default AdminListProduct;
+
+export default AdminListUser

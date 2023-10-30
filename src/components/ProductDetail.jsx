@@ -3,6 +3,7 @@ import Header from "./Header"
 import { getUserIdFromCookie } from "./Header"
 import Footer from "./Footer"
 import { useNavigate, useParams } from "react-router-dom"
+import './main.css'
 
 const ProductDetail = () => {
     const [product, setProduct] = useState({
@@ -19,17 +20,20 @@ const ProductDetail = () => {
 
     useEffect(() => {
         const cookieArray = document.cookie.split(';');
-        const userId = cookieArray.filter(cookie => cookie.includes('userId'))[0].split('=')[1];
-        fetch('http://localhost:9999/user/' + userId)
-            .then((result) => {
-                return result.json();
-            })
-            .then((result) => {
-                setUser(result);
-            })
-            .catch((err) => {
-                console.log('error', err);
-            });
+        const userIdObject = cookieArray.filter(cookie => cookie.includes('userId'))[0];
+        if (userIdObject) {
+            const userId = userIdObject.split('=')[1];
+            fetch('http://localhost:9999/user/' + userId)
+                .then((result) => {
+                    return result.json();
+                })
+                .then((result) => {
+                    setUser(result);
+                })
+                .catch((err) => {
+                    console.log('error', err);
+                });
+        }
     }, [])
 
     useEffect(() => {
@@ -88,6 +92,8 @@ const ProductDetail = () => {
             });
     }
 
+    console.log(user.id);
+
     return (
         <>
             <Header />
@@ -98,7 +104,7 @@ const ProductDetail = () => {
                     </div>
                     <div className="col-6">
                         <h2 style={{ margin: '10px 0' }}>{product.name}</h2>
-                        <h3 style={{ color: 'red' }}>{product.price.toLocaleString('en-US')} đ</h3>
+                        <h3 style={{ color: 'red' }}>{ parseInt(product.price).toLocaleString('en-US')} đ</h3>
                         <h3 style={{ color: '#2f3133' }}>Size: {product.size}</h3>
 
 
@@ -110,8 +116,18 @@ const ProductDetail = () => {
                         </div>
 
                         <div className="row col-5 d-flex justify-content-between my-5">
-                            <button className="btn btn-success" onClick={() => addToCart()}>Add to cart</button>
-                            <button className="btn btn-danger" onClick={() => navigate('/cart')}>View Cart</button>
+                            {
+                                user.id ? (
+                                    <>
+                                        <button className="btn btn-success" onClick={() => addToCart()}>Add to cart</button>
+                                        <button className="btn btn-danger" onClick={() => navigate('/cart')}>View Cart</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button className="btn btn-outline-success">Login First To Buy This Product</button>
+                                    </>
+                                )
+                            }
                         </div>
                     </div>
                 </div>

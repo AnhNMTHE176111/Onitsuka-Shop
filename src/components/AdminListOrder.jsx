@@ -1,28 +1,36 @@
-import { Button, Col, Container, FormControl, Row, Table } from 'react-bootstrap'
-import { useEffect, useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import SideBar from './SideBar';
-import './main.css'
+import { useEffect, useRef, useState } from "react";
+import { Button, Col, Container, FormControl, Row, Table } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import SideBar from "./SideBar";
 
-const AdminListProduct = () => {
-    const [Product, setProduct] = useState([]);
-    const [searchedProduct, setSearchedProduct] = useState([]);
-    const [paggingProducts, setPaggingProducts] = useState([]);
+const AdminListOrder = () => {
+    const [orders, setOrders] = useState([]);
+    const [searchedOrder, setSearchedOrder] = useState([]);
+    const [paggingOrders, setPaggingOrders] = useState([]);
     const [pagging, setPagging] = useState([]);
     const [isChange, setIsChange] = useState(true)
     const search = useRef("");
     const navigate = useNavigate();
 
-
     useEffect(() => {
-        fetch("http://localhost:9999/product")
+        fetch("http://localhost:9999/user")
             .then((res) => res.json())
             .then((result) => {
+                let listOrder = [];
+                result.map(item => {
+                    if (item.order) {
+                        listOrder = [...listOrder, ...item.order];
+                    }
+                })
+                console.log(listOrder);
+                return listOrder;
+            })
+            .then((result) => {
                 if (result.length >= 10) {
-                    setPaggingProducts(result.slice(0, 10))
+                    setPaggingOrders(result.slice(0, 10))
                 }
                 else {
-                    setPaggingProducts(result.slice(0, result.length));
+                    setPaggingOrders(result.slice(0, result.length));
                 }
                 let setpagging = [];
                 let end;
@@ -35,47 +43,54 @@ const AdminListProduct = () => {
                     setpagging = [...setpagging, i]
                 }
                 setPagging(setpagging);
-                setSearchedProduct(result);
-                setProduct(result);
-            });
+                setSearchedOrder(result);
+                setOrders(result);
+            })
     }, [isChange])
+
     useEffect(() => {
-        if (searchedProduct.length >= 10) {
-            setPaggingProducts(searchedProduct.slice(0, 10))
+        if (searchedOrder.length >= 10) {
+            setPaggingOrders(searchedOrder.slice(0, 10))
         }
         else {
-            setPaggingProducts(searchedProduct.slice(0, searchedProduct.length));
+            setPaggingOrders(searchedOrder.slice(0, searchedOrder.length));
         }
         let setpagging = [];
         let end;
-        if (searchedProduct.length % 10 === 0) {
-            end = searchedProduct.length / 10;
+        if (searchedOrder.length % 10 === 0) {
+            end = searchedOrder.length / 10;
         } else {
-            end = searchedProduct.length / 10 + 1;
+            end = searchedOrder.length / 10 + 1;
         }
         for (let i = 1; i <= end; i++) {
             setpagging = [...setpagging, i]
         }
         setPagging(setpagging);
-    }, [searchedProduct])
+    }, [searchedOrder])
 
     const Pagging = (index) => {
-        if (Product.length > index * 10) {
-            setPaggingProducts(searchedProduct.slice((index - 1) * 10, index * 10))
+        if (orders.length > index * 10) {
+            setPaggingOrders(searchedOrder.slice((index - 1) * 10, index * 10))
         }
-        else setPaggingProducts(searchedProduct.slice((index - 1) * 10, searchedProduct.length))
+        else setPaggingOrders(searchedOrder.slice((index - 1) * 10, searchedOrder.length))
     }
     const SearchedList = (key) => {
-        const searchedList = Product.filter((p) => {
-            return p.name.toLowerCase().includes(key.current.value.toLowerCase());
-        });
-        setSearchedProduct(searchedList);
+        if (key.current.value.length > 0) {
+            const searchedList = orders.filter((p) => {
+                return p.date.toLowerCase().includes(key.current.value.toLowerCase());
+            });
+            setSearchedOrder(searchedList);
+        }
+        else {
+            const searchedList = orders;
+            setSearchedOrder(searchedList);
+        }
     }
 
-    const deleteProduct = async (id) => {
+    const deleteOrder = async (id) => {
         const confirm = window.confirm('Do you want to delete?')
         if (confirm) {
-            fetch(`http://localHost:9999/product/${id}`, {
+            fetch(`http://localhost:9999/user/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -86,6 +101,7 @@ const AdminListProduct = () => {
                 })
         };
     }
+
     return (
         <div>
             <Container fluid>
@@ -93,32 +109,19 @@ const AdminListProduct = () => {
                     <SideBar />
                     <Col md={10} style={{ padding: "0" }}>
                         <div className="topbar">
-                            <h1 className="admin-title">Product Management</h1>
+                            <h1 className="admin-title">Order Management</h1>
                         </div>
                         <div className='admin-content'>
                             <Container>
                                 <Row style={{ marginBottom: "20px" }}>
 
-                                    <Col md={6}>
-                                        <div className='input-group'>
-                                            <FormControl type='text' placeholder='Enter name to search'
+                                    <Col md={3}>
+                                        <div className='form-group'>
+                                            <label htmlFor="date">Choose Date Order:</label>
+                                            <FormControl id="date" type='date'
                                                 ref={search}
                                                 onChange={() => SearchedList(search)} />
-                                            <div className='input-group-prepend'>
-                                                {/* <Button className='btn-dark'
-                                                    onClick={() => SearchedList(search)}>
-                                                    Search
-                                                </Button> */}
-                                            </div>
                                         </div>
-                                    </Col>
-                                    <Col md={2}>
-                                        <Link to="/createproduct">
-                                            <Button style={{ width: '200px' }}
-                                                className='btn-success'>
-                                                Create a new product
-                                            </Button>
-                                        </Link>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -131,26 +134,31 @@ const AdminListProduct = () => {
                                                 }}>
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Size</th>
+                                                    <th>Product</th>
                                                     <th>Price</th>
-                                                    <th>Action</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Time</th>
+                                                    <th>Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
-                                                    paggingProducts.map((p, index) => {
-                                                        const price = parseInt(p.price).toLocaleString('en-US');
+                                                    paggingOrders.map((p, index) => {
+                                                        let price = parseInt(p.price).toLocaleString('en-US');
+                                                        let amount = (parseInt(p.price) * parseInt(p.quantity)).toLocaleString('en-US');
+                                                        let date = p.date.split('T')[0];
+                                                        let time = p.date.split('T')[1].slice(0, 8);
                                                         return (
                                                             <tr key={index}>
-                                                                <td>{p.id}</td>
-                                                                <td onClick={() => navigate(`/chi-tiet-san-pham/${p.id}`)}>
-                                                                    {p.name}</td>
-                                                                <td>{p.size}</td>
-                                                                <td>{price} đ</td>
-                                                                <td><Link className="btn btn-danger"
-                                                                    onClick={() => deleteProduct(p.id)}>
-                                                                    Delete</Link></td>
+                                                                <td>{index}</td>
+                                                                <td>{p.name}</td>
+                                                                <td>{price}</td>
+                                                                <td>{p.quantity}</td>
+                                                                <td>{amount}</td>
+                                                                <td>{time}</td>
+                                                                <td>{date}</td>
+
                                                             </tr>
                                                         )
                                                     })
@@ -179,4 +187,5 @@ const AdminListProduct = () => {
         </div >
     )
 }
-export default AdminListProduct;
+
+export default AdminListOrder

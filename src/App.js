@@ -9,6 +9,11 @@ import ProductDetail from './components/ProductDetail';
 import Cart from './components/Cart';
 import Header from './components/Header';
 import Profile from './components/Profile';
+import './index.css'
+import AdminListUser from './components/AdminListUser';
+import CreateUser from './components/CreateUser';
+import AdminListOrder from './components/AdminListOrder';
+import AdminStatistic from './components/AdminStatistic';
 
 function App() {
   return (
@@ -26,7 +31,11 @@ function App() {
         <Route path="/admin" element={<AdminListProduct />} />
         <Route path="/productmanagement" element={<AdminListProduct />} />
         <Route path="/createproduct" element={<CreateProduct />} />
-        <Route path="/chi-tiet-san-pham/:ProductID" element={<EditProduct />} />
+        <Route path="/adminusers" element={<AdminListUser />} />
+        <Route path="/createUser" element={<CreateUser />} />
+        <Route path="/adminorders" element={<AdminListOrder />} />
+        <Route path="/statistics" element={<AdminStatistic />} />
+        <Route path="/chi-tiet-san-pham/:ProductId" element={<EditProduct />} />
       </Routes>
     </BrowserRouter>
   );

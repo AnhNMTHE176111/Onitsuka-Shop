@@ -3,6 +3,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 import { Row } from "react-bootstrap";
+import './main.css'
 
 const Profile = () => {
     const [user, setUser] = useState({});

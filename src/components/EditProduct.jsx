@@ -1,6 +1,9 @@
 import { Col, Container, Row, Button } from 'react-bootstrap'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
+// import multer from 'multer';
+// import fs from 'fs'
+import './main.css'
 
 const EditProduct = () => {
     const navigate = useNavigate();
@@ -11,13 +14,14 @@ const EditProduct = () => {
         price: 0,
         image: ''
     }
-    const { ProductID } = useParams();
+    const ProductID = useParams().ProductId;
     const [Product, setProduct] = useState(defaultProduct);
-    const name = useRef();
-    const price = useRef();
-    const size = useRef();
-    const image = useRef();
-    const [img, setImg] = useState("");
+    const [name, setName] = useState('');
+    const [size, setSize] = useState(0);
+    const [price, setPrice] = useState(0);
+    const [image, setImage] = useState("");
+    const [file, setFile] = useState();
+    const [previewImage, setPreviewImage] = useState(null);
     const [isChange, setIsChange] = useState(true);
 
     useEffect(() => {
@@ -28,34 +32,50 @@ const EditProduct = () => {
                     return r.id == ProductID;
                 })
                 setProduct(currentProduct);
-                setImg(currentProduct.Images)
+                setName(currentProduct.name);
+                setSize(currentProduct.size);
+                setPrice(currentProduct.price);
+                if (!currentProduct.image.startsWith('blob')) {
+                    let StringSrcImage = 'http://localhost:3000' + currentProduct.image.slice(1, currentProduct.image.length);
+                    setImage(StringSrcImage);
+                }
+                else {
+                    setImage(currentProduct.image);
+                }
+                setPreviewImage('')
             });
-    }, [])
-
-
-    const updateImage = (e) => {
-        const link = e.target.value;
-        const links = link.split("\\");
-        // const nameproduct = name.current.value.trim().split(" ");
-        // const linkname = nameproduct.join("_");
-    }
+    }, [isChange])
 
     const handleProduct = () => {
-        if (name.current.value === "" ||
-            price.current.value === "" ||
-            size.current.value === "" ||
-            image.current.value === "") {
+        if (name === "" ||
+            price === "" ||
+            size === "" ||
+            image === "") {
             alert("Please enter complete information");
         }
-        else if (size.current.value < 36 || size.current.value > 45) {
+        else if (size < 36 || size > 45) {
             alert("Size must be between 36 and 45");
         }
         else {
-            const newproduct = {
-                name: name.current.value,
-                price: price.current.value,
-                size: size.current.value,
-                image: `../images/media/image${ProductID}.jpg`
+            let newproduct = {}
+            if (file) {
+                const url = URL.createObjectURL(file);
+                document.getElementById('abcxyz').src = url.toString();
+
+                newproduct = {
+                    name: name,
+                    price: price,
+                    size: size,
+                    image: url
+                }
+            }
+            else {
+                newproduct = {
+                    name: name,
+                    price: price,
+                    size: size,
+                    image: image
+                }
             }
             fetch(`http://localhost:9999/Product/${ProductID}`, {
                 method: "PUT",
@@ -67,12 +87,33 @@ const EditProduct = () => {
             alert("Change Successfully")
             setIsChange(!isChange)
         }
-        navigate("/");
+        // navigate("/");
     }
 
+    function handleResetProduct() {
+        setIsChange(!isChange)
+    }
+
+    const previewProfileImage = (e) => {
+        setFile(e.target.files[0]);
+        const file = e.target.files[0]; // Get the selected file
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                // Set the previewImage state with the data URL of the selected image
+                setPreviewImage(event.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+
+
+
     return (
-        <div style={{ margin: '50px' }}>
-            <Container fluid>
+        <div style={{ margin: '' }} className='col-12 justify-content-center d-flex'>
+            <Container fluid className='col-8 my-5'>
                 <Row>
                     <Col md={10} style={{ padding: "0" }}>
                         <div className="topbar">
@@ -84,52 +125,67 @@ const EditProduct = () => {
                                     <div className="form-group">
                                         <label htmlFor="ID">ID:</label>
                                         <input type="text" className="form-control"
-                                            id="ID" defaultValue={ProductID} readOnly />
+                                            id="ID"
+                                            defaultValue={ProductID}
+                                            readOnly />
                                     </div>
                                 </Col>
                                 <Col md={12}>
                                     <div className="form-group">
                                         <label htmlFor="name">Name:</label>
-                                        <input type="text" className="form-control" id="name"
-                                            defaultValue={Product.name} ref={name} />
+                                        <input required type="text" className="form-control"
+                                            id="name"
+                                            defaultValue={name}
+                                            onChange={e => setName(e.target.value)} />
                                     </div>
                                 </Col>
                                 <Col md={6}>
                                     <div className="form-group">
                                         <label htmlFor="price">Price:</label>
-                                        <input type="number" className="form-control"
-                                            id="price" defaultValue={Product.price} ref={price} />
+                                        <input required type="text" className="form-control"
+                                            id="price"
+                                            value={price}
+                                            onChange={e => setPrice(e.target.value)}
+                                        />
                                     </div>
+
                                 </Col>
                                 <Col md={6}>
                                     <div className="form-group">
-                                        <label htmlFor="image">Size:</label>
-                                        <input required type="number"
-                                            className="form-control"
+                                        <label htmlFor="size">Size:</label>
+                                        <input required type="text" className="form-control"
                                             id="size"
-                                            defaultValue={Product.size}
-                                            ref={size} />
+                                            value={size}
+                                            onChange={e => setSize(e.target.value)}
+                                        />
                                     </div>
                                 </Col>
                                 <Col md={6}>
-                                    <img src={img} style={{ width: "100%" }} alt='' />
+                                    <img src={image} style={{ width: "100%" }} alt='' />
                                     <div className="form-group">
                                         <label htmlFor="image">Image:</label>
-                                        <input type="file" className="form-control"
-                                            id="image" ref={image} onChange={(e) => updateImage(e)} />
+                                        <input type="file" className="form-control" accept="image/gif, image/jpeg, image/png"
+                                            id="image" onChange={(e) => previewProfileImage(e)} />
                                     </div>
                                 </Col>
                                 <Col md={6}>
-                                    <img src={Product.image} alt="" style={{ width: "100%" }} />
+                                    <img id='image-shoes' src={previewImage} alt="" style={{ width: "100%" }} />
+                                    <img id='abcxyz' src="" alt="" style={{ display: 'none' }} />
                                 </Col>
 
                             </Row>
-                            <Button style={{
-                                marginTop: "50px",
-                                height: "70px", width: "150px",
-                                fontSize: "30px", fontWeight: "600"
-                            }}
-                                onClick={() => handleProduct()}>Save</Button>
+                            <Row className='col-12 d-flex justify-content-start my-3'>
+                                <Button
+                                    className='btn btn-success  mx-2'
+                                    onClick={() => navigate('/admin')}>Admin Home</Button>
+                                <Button
+                                    className='btn btn-primary mx-2 px-5'
+                                    onClick={() => handleProduct()}>Save</Button>
+                                <Button
+                                    className='btn btn-dark mx-2'
+                                    onClick={() => handleResetProduct()}>Reset</Button>
+                            </Row>
+
                         </div>
                     </Col>
                 </Row>

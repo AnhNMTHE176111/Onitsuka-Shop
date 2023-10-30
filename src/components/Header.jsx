@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import './main.css'
 
 
 const Header = ({ onSearch }) => {
@@ -45,9 +46,9 @@ const Header = ({ onSearch }) => {
                 <div className="container col-12">
 
                     <div className="col-sm-12 col-lg-1 col-md-4 logo">
-                        <Link to="home" className="navbar-brand">
+                        <div onClick={() => navigate('/')} className="navbar-brand">
                             <img src="./images/logo.jpg" alt="" width="100px" />
-                        </Link>
+                        </div>
                     </div>
 
                     <div className="justify-content-center search-field col-sm-12 col-lg-5 col-md-4">

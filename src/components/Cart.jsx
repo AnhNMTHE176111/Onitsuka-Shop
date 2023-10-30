@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Footer from "./Footer"
 import Header from "./Header"
 import { useNavigate } from "react-router-dom";
+import './main.css'
 
 const Cart = () => {
     const [user, setUser] = useState({});
@@ -113,6 +114,7 @@ const Cart = () => {
         if (a) {
             let newCart = [...cart];
             order.map((item, index) => {
+                item.date = (new Date());
                 newCart = newCart.filter(a => a.id !== item.id);
             })
             let newOrder = [...user.order, ...order];
@@ -120,7 +122,8 @@ const Cart = () => {
             user.order = newOrder;
             const newUser = user;
             updateCart(newUser);
-            setCart([])
+            setCart([]);
+            setOrder([]);
         }
     }
 

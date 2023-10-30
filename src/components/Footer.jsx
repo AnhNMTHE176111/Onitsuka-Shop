@@ -1,3 +1,4 @@
+import './main.css'
 const Footer = () => {
     return (
         <footer className="bg-dark col-lg-12 col-md-12 col-sm-12 col-12 justify-content-center " style={{display: 'flex'}}>

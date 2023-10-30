@@ -1,11 +1,11 @@
 {
   "product": [
     {
-      "id": 1,
       "name": "Prestiger Limber UD Nippon",
-      "size": 36,
       "price": 1769000,
-      "image": "./images/media/image1.jpg"
+      "size": 36,
+      "image": "./images/media/image1.jpg",
+      "id": 1
     },
     {
       "id": 2,
@@ -538,6 +538,13 @@
       "size": 45,
       "price": 2669000,
       "image": "./images/media/image77.jpg"
+    },
+    {
+      "name": "Onitsuka Example ",
+      "price": 1700000,
+      "size": 36,
+      "image": "blob:http://localhost:3000/65f84ccc-22fd-4ca1-8134-fb5580f35561",
+      "id": 78
     }
   ],
   "user": [
@@ -562,7 +569,26 @@
       "username": "vananh",
       "role": "customer",
       "password": "123",
-      "order": [],
+      "order": [
+        {
+          "id": 11,
+          "name": "GSM",
+          "size": 39,
+          "price": 3043000,
+          "image": "./images/media/image11.jpg",
+          "quantity": 3,
+          "date": "2023-10-27T12:53:59.975Z"
+        },
+        {
+          "id": 2,
+          "name": "Mexico 66 D7A9N-9090",
+          "size": 36,
+          "price": 1909000,
+          "image": "./images/media/image2.jpg",
+          "quantity": 1,
+          "date": "2023-10-28T12:53:59.975Z"
+        }
+      ],
       "cart": []
     },
     {
@@ -570,7 +596,35 @@
       "username": "mra",
       "role": "customer",
       "password": "123",
-      "order": [],
+      "order": [
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": "1769000",
+          "size": 36,
+          "image": "blob:http://localhost:3000/fd1f86b7-4c5e-44ea-92ef-a630e48f3d79",
+          "id": 1,
+          "quantity": 1,
+          "date": "2023-10-29T12:45:21.712Z"
+        },
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": "1769000",
+          "size": 36,
+          "image": "blob:http://localhost:3000/fd1f86b7-4c5e-44ea-92ef-a630e48f3d79",
+          "id": 1,
+          "quantity": 1,
+          "date": "2023-10-29T12:52:33.699Z"
+        },
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": "1769000",
+          "size": 36,
+          "image": "blob:http://localhost:3000/fd1f86b7-4c5e-44ea-92ef-a630e48f3d79",
+          "id": 1,
+          "quantity": 1,
+          "date": "2023-10-28T12:53:25.402Z"
+        }
+      ],
       "cart": []
     },
     {
@@ -588,20 +642,40 @@
       "password": "123",
       "order": [
         {
-          "id": 58,
-          "name": "Corsair Vin",
-          "size": 42,
-          "price": 992000,
-          "image": "./images/media/image58.jpg",
-          "quantity": 1
+          "id": 12,
+          "name": "Mexico66 Nippon Made",
+          "size": 39,
+          "price": 1048000,
+          "image": "./images/media/image12.jpg",
+          "quantity": 4,
+          "date": "2023-10-29T15:03:32.917Z"
         },
         {
-          "id": 71,
-          "name": "Mexico 66 Slipon",
-          "size": 43.5,
-          "price": 2553000,
-          "image": "./images/media/image71.jpg",
-          "quantity": 1
+          "id": 6,
+          "name": "Mexico 66 D508K-9080",
+          "size": 37,
+          "price": 3010000,
+          "image": "./images/media/image6.jpg",
+          "quantity": 3,
+          "date": "2023-10-29T15:03:32.917Z"
+        },
+        {
+          "id": 8,
+          "name": "Mexico 66",
+          "size": 37.5,
+          "price": 1978000,
+          "image": "./images/media/image8.jpg",
+          "quantity": 1,
+          "date": "2023-10-29T15:10:00.963Z"
+        },
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": "1769000",
+          "size": 36,
+          "image": "./images/media/image1.jpg",
+          "id": 1,
+          "quantity": 2,
+          "date": "2023-10-29T15:10:00.963Z"
         }
       ],
       "cart": []

@@ -1,3 +1,4 @@
+import './main.css'
 const Banner = () => {
     return (
         <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">

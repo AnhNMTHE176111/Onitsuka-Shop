@@ -3,6 +3,7 @@ import Header from "./Header";
 import Banner from "./Banner";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
+import './main.css'
 
 const ListProduct = () => {
     const PRODUCT_PER_PAGE = 12;
@@ -199,7 +200,7 @@ const ListProduct = () => {
                     <div className="product-list col-md-9">
                         {
                             pagingProducts.map(product => {
-                                const price = product.price.toLocaleString('en-US');
+                                const price = parseInt(product.price).toLocaleString('en-US');
                                 const linkProduct = product.name.toLowerCase().replace(/\s/g, '-');
                                 return (
                                     <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={product.id}

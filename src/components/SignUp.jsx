@@ -24,12 +24,24 @@ const SignUp = () => {
     async function handleSubmit(e) {
         console.log('click');
         e.preventDefault();
-        let username = document.getElementById('username').value;
-        let password = document.getElementById('password').value;
-        let repassword = document.getElementById('repassword').value;
+        let username = document.getElementById('username').value.trim();
+        let password = document.getElementById('password').value.trim();
+        let repassword = document.getElementById('repassword').value.trim();
+        if(username.includes(' ')) {
+            setMsg({
+                text: 'Username must not include space',
+                status: false
+            })
+        }
         if (repassword !== password) {
             setMsg({
                 text: 'Password mismatch',
+                status: false
+            })
+        }
+        else if(password.length < 3) {
+            setMsg({
+                text: 'Password must be at least 3 characters',
                 status: false
             })
         }

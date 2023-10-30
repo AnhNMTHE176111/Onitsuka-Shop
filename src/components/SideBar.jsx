@@ -1,4 +1,4 @@
-
+import './main.css'
 import { Row, Col } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
 const SideBar = () => {

@@ -1,6 +1,9 @@
 import { Col, Container, Row, Button } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react';
+import FileSaver, { saveAs } from 'file-saver';
+import './main.css'
+
 
 const CreateProduct = () => {
     const navigate = useNavigate();
@@ -11,86 +14,97 @@ const CreateProduct = () => {
         price: 0,
         image: ''
     }
-    const { ProductID } = useParams();
+    const [listProduct, setListProduct] = useState([]);
     const [Product, setProduct] = useState(defaultProduct);
-    const [img, setImg] = useState("");
-    const name = useRef();
-    const category = useRef();
-    const price = useRef();
-    const size = useRef();
-    const image = useRef();
-
     const [productId, setProductId] = useState(0);
+    const [name, setName] = useState('');
+    const [size, setSize] = useState(0);
+    const [price, setPrice] = useState(0);
+    const [image, setImage] = useState("");
+    const [file, setFile] = useState();
+    const [previewImage, setPreviewImage] = useState(null);
+    const [isChange, setIsChange] = useState(true);
+
     useEffect(() => {
         fetch("http://localhost:9999/Product")
             .then((res) => res.json())
             .then((result) => {
+                setListProduct(result);
                 setProductId(result.length + 1);
             });
-    }, [])
-    useEffect(() => {
-        fetch("http://localhost:9999/Product")
-            .then((res) => res.json())
-            .then((result) => {
-                result.map((r) => {
-                    if (r.id == ProductID) {
-                        setProduct(r);
-                    }
-                })
-            });
-    }, [])
+    }, [isChange])
 
     const handleCreate = async () => {
-        if (name.current.value === "" ||
-            price.current.value === "" ||
-            size.current.value === "" ||
-            image.current.value === "") {
+        if (name === "" ||
+            price === "" ||
+            size === "" ||
+            image === "") {
             alert("Please enter complete information");
         }
-        else if (size.current.value < 36 || size.current.value > 45) {
+        else if (size < 36 || size > 45) {
             alert("Size must be between 36 and 45");
         }
         else {
-            try {
-                const link = image.current.value;
-                const links = link.split("\\");
-                // const nameproduct = name.current.value.trim().split(" ");
-                // const linkname = nameproduct.join("_");
-                const newproduct = {
-                    name: name.current.value,
-                    price: price.current.value,
-                    size: size.current.value,
-                    image: `../images/media/image${productId}.jpg`
-                }
+            const data = [...listProduct];
+            let product = data.filter(item => item.name.toLowerCase() === name.toLowerCase());
+            if (product.length > 0) {
+                alert("Product Existed");
+                setIsChange(!isChange)
+            }
+            else {
+                let newproduct = {}
+                if (file) {
+                    
+                    const url = URL.createObjectURL(file);
+                    document.getElementById('abcxyz').src = url.toString();
 
-                const response = await fetch("http://localhost:9999/product", {
+                    newproduct = {
+                        name: name,
+                        price: parseInt(price),
+                        size: size,
+                        image: url
+                    }
+                }
+                else {
+                    newproduct = {
+                        name: name,
+                        price: parseInt(price),
+                        size: size,
+                        image: image
+                    }
+                }
+                await fetch("http://localhost:9999/product", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(newproduct),
                 });
-            } catch (error) {
-                console.error(error);
-                // Handle the error, show an error message, or perform any necessary actions
+                setIsChange(!isChange)
+                alert("Add new product Successfully")
             }
-            navigate("/");
         }
     }
-    const updateImage = (e) => {
-        const link = e.target.value;
-        const links = link.split("\\");
-        const linkname = category.current.value;
-        // const nameproduct = name.current.value.trim().split(" ");
-        // const linkname = nameproduct.join("_");
-        // console.log(links)
-        setImg(`./images/media/image${productId}.jpg`)
-    }
 
+    const previewProfileImage = (e) => {
+        setFile(e.target.files[0]);
+        const file = e.target.files[0]; // Get the selected file
+        setImage(file.name);
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                // Set the previewImage state with the data URL of the selected image
+                setPreviewImage(event.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
 
     return (
-        <div style={{ margin: '50px' }}>
-            <Container fluid>
+        <div style={{ margin: '' }} className='col-12 justify-content-center d-flex'>
+            <Container fluid className='col-8 my-5'>
                 <Row>
                     <Col md={10} style={{ padding: "0" }}>
                         <div className="topbar">
@@ -101,43 +115,48 @@ const CreateProduct = () => {
                                 <Col md={12}>
                                     <div className="form-group">
                                         <label htmlFor="name">Name:</label>
-                                        <input required type="text"
-                                            className="form-control"
+                                        <input required type="text" className="form-control"
                                             id="name"
-                                            ref={name} />
+                                            defaultValue={name}
+                                            onChange={e => setName(e.target.value)} />
                                     </div>
                                 </Col>
                                 <Col md={6}>
                                     <div className="form-group">
                                         <label htmlFor="price">Price:</label>
-                                        <input required type="number"
-                                            className="form-control"
+                                        <input required type="text" className="form-control"
                                             id="price"
-                                            ref={price} />
+                                            value={price}
+                                            onChange={e => setPrice(e.target.value)}
+                                        />
                                     </div>
+
                                 </Col>
                                 <Col md={6}>
                                     <div className="form-group">
-                                        <label htmlFor="image">Size:</label>
-                                        <input required type="number"
-                                            className="form-control"
+                                        <label htmlFor="size">Size:</label>
+                                        <input required type="text" className="form-control"
                                             id="size"
-                                            ref={size} />
+                                            value={size}
+                                            onChange={e => setSize(parseInt(e.target.value))}
+                                        />
                                     </div>
                                 </Col>
                                 <Col md={6}>
-                                    <img src={img} style={{ width: "100%" }} alt='' />
+                                    <img src={image} style={{ width: "100%" }} alt='' />
                                     <div className="form-group">
                                         <label htmlFor="image">Image:</label>
-                                        <input required type="file"
-                                            className="form-control"
-                                            id="image" ref={image}
-                                            onChange={(e) => updateImage(e)} />
+                                        <input type="file" className="form-control" accept="image/gif, image/jpeg, image/png"
+                                            id="image" onChange={(e) => previewProfileImage(e)} />
                                     </div>
+                                </Col>
+                                <Col md={6}>
+                                    <img id='image-shoes' src={previewImage} alt="" style={{ width: "100%" }} />
+                                    <img id='abcxyz' src="" alt="" style={{ display: 'none' }} />
                                 </Col>
                             </Row>
                             <Button style={{ marginTop: "10px", marginRight: '20px' }}
-                                onClick={() => window.location.href = '/admin'}
+                                onClick={() => navigate('/admin')}
                                 className='btn btn-success'
                             >
                                 Admin Home
