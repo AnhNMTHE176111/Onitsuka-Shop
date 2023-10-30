@@ -96,4 +96,58 @@ const SignIn = () => {
     )
 }
 
+
+export async function handleSubmitLogin(username, password) {
+    let users = [];
+    await fetch('http://localhost:9999/user')
+        .then(result => result.json())
+        .then(result => users = [...result]);
+
+
+    if (username === "" ||
+        password === "") {
+        return ({
+            text: 'Please complete all fields',
+            status: false
+        })
+    }
+    else if (username.includes(' ')) {
+        return ({
+            text: 'Username must not include space',
+            status: false
+        })
+    }
+    else if (password.length < 3) {
+        return ({
+            text: 'Password must be at least 3 characters',
+            status: false
+        })
+    }
+    else {
+        // && user.password === password
+        let user = users.filter(user => user.username === username)[0];
+        if (user) {
+            if (user.password == password) {
+                return ({
+                    text: 'Login successfully',
+                    status: true
+                })
+            }
+            else {
+                return ({
+                    text: 'Wrong password',
+                    status: false
+                })
+            }
+        }
+        else {
+            return ({
+                text: 'Not found user',
+                status: false
+            })
+        }
+
+    }
+}
+
 export default SignIn

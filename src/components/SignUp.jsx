@@ -22,24 +22,23 @@ const SignUp = () => {
 
 
     async function handleSubmit(e) {
-        console.log('click');
         e.preventDefault();
         let username = document.getElementById('username').value.trim();
         let password = document.getElementById('password').value.trim();
         let repassword = document.getElementById('repassword').value.trim();
-        if(username.includes(' ')) {
+        if (username.includes(' ')) {
             setMsg({
                 text: 'Username must not include space',
                 status: false
             })
         }
-        if (repassword !== password) {
+        else if (repassword !== password) {
             setMsg({
                 text: 'Password mismatch',
                 status: false
             })
         }
-        else if(password.length < 3) {
+        else if (password.length < 3) {
             setMsg({
                 text: 'Password must be at least 3 characters',
                 status: false
@@ -89,6 +88,7 @@ const SignUp = () => {
             }
         }
     }
+
     return (
         <div className="signup-container">
             <div className="col-lg-6 left" style={{ backgroundImage: 'url(\'../images/background_img_register.jpg\')' }}>
@@ -142,4 +142,72 @@ const SignUp = () => {
     )
 }
 
+export async function handleSubmitRegister(username, password, repassword) {
+    let users = [];
+    await fetch('http://localhost:9999/user')
+        .then(result => result.json())
+        .then(result => users = [...result]);
+
+
+    if (username === "" ||
+        password === "" ||
+        repassword === "") {
+        return ({
+            text: 'Please complete all fields',
+            status: false
+        })
+    }
+    else if (username.includes(' ')) {
+        return ({
+            text: 'Username must not include space',
+            status: false
+        })
+    }
+    else if (repassword !== password) {
+        return ({
+            text: 'Password mismatch',
+            status: false
+        })
+    }
+    else if (password.length < 3) {
+        return ({
+            text: 'Password must be at least 3 characters',
+            status: false
+        })
+    }
+    else {
+        let user = users.filter(user => user.username === username && user.password === password)[0];
+        if (user) {
+            return ({
+                text: 'User existed',
+                status: false
+            })
+        }
+        else {
+            try {
+                const newUser = {
+                    username: username,
+                    role: 'customer',
+                    password: password,
+                    cart: []
+                }
+                return ({
+                    text: 'Create New User Successfully',
+                    status: true
+                });
+
+            } catch (error) {
+                return ({
+                    text: 'Something error',
+                    status: false
+                });
+            }
+
+        }
+    }
+}
+
+
+
 export default SignUp
+

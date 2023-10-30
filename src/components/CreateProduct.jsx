@@ -54,7 +54,7 @@ const CreateProduct = () => {
             else {
                 let newproduct = {}
                 if (file) {
-                    
+
                     const url = URL.createObjectURL(file);
                     document.getElementById('abcxyz').src = url.toString();
 
@@ -173,3 +173,29 @@ const CreateProduct = () => {
     )
 }
 export default CreateProduct;
+
+export async function handleCreateProduct(name, price, size, image) {
+    if (name === "" ||
+        price === "" ||
+        size === "" ||
+        image === "") {
+        return ("Please enter complete information");
+    }
+    else if (size < 36 || size > 45) {
+        return ("Size must be between 36 and 45");
+    }
+    else {
+        let data = [];
+        await fetch("http://localhost:9999/product")
+            .then(result => result.json())
+            .then(result => data = [...result]);
+
+        let product = data.filter(item => item.name.toLowerCase() === name.toLowerCase());
+        if (product.length > 0) {
+            return ("Product Existed");
+        }
+        else {
+            return ("Add new product Successfully")
+        }
+    }
+}

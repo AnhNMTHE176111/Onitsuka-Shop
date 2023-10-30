@@ -538,13 +538,6 @@
       "size": 45,
       "price": 2669000,
       "image": "./images/media/image77.jpg"
-    },
-    {
-      "name": "Onitsuka Example ",
-      "price": 1700000,
-      "size": 36,
-      "image": "blob:http://localhost:3000/65f84ccc-22fd-4ca1-8134-fb5580f35561",
-      "id": 78
     }
   ],
   "user": [
@@ -679,6 +672,13 @@
         }
       ],
       "cart": []
+    },
+    {
+      "username": "TuanAnh",
+      "role": "customer",
+      "password": "123",
+      "cart": [],
+      "id": 7
     }
   ]
 }
