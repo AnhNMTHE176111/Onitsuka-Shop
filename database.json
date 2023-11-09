@@ -546,7 +546,35 @@
       "username": "tuananh",
       "role": "admin",
       "password": "123",
-      "order": [],
+      "order": [
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": 1769000,
+          "size": 36,
+          "image": "./images/media/image1.jpg",
+          "id": 1,
+          "quantity": 1,
+          "date": "2023-10-31T02:54:50.038Z"
+        },
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": 1769000,
+          "size": 36,
+          "image": "./images/media/image1.jpg",
+          "id": 1,
+          "quantity": 1,
+          "date": "2023-10-31T03:14:32.878Z"
+        },
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": 1769000,
+          "size": 36,
+          "image": "./images/media/image1.jpg",
+          "id": 1,
+          "quantity": 1,
+          "date": "2023-10-31T03:15:15.338Z"
+        }
+      ],
       "cart": []
     },
     {
@@ -669,6 +697,24 @@
           "id": 1,
           "quantity": 2,
           "date": "2023-10-29T15:10:00.963Z"
+        },
+        {
+          "id": 2,
+          "name": "Mexico 66 D7A9N-9090",
+          "size": 36,
+          "price": 1909000,
+          "image": "./images/media/image2.jpg",
+          "quantity": 1,
+          "date": "2023-10-31T03:31:22.656Z"
+        },
+        {
+          "id": 7,
+          "name": "Mexico 66 Paraty",
+          "size": 37,
+          "price": 1988000,
+          "image": "./images/media/image7.jpg",
+          "quantity": 1,
+          "date": "2023-10-31T03:31:22.657Z"
         }
       ],
       "cart": []
@@ -679,6 +725,22 @@
       "password": "123",
       "cart": [],
       "id": 7
+    },
+    {
+      "username": "thienkhoi",
+      "role": "customer",
+      "password": "123",
+      "cart": [
+        {
+          "name": "Prestiger Limber UD Nippon",
+          "price": 1769000,
+          "size": 36,
+          "image": "./images/media/image1.jpg",
+          "id": 1,
+          "quantity": 1
+        }
+      ],
+      "id": 8
     }
   ]
 }

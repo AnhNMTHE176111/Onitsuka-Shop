@@ -104,7 +104,7 @@ const ProductDetail = () => {
                     </div>
                     <div className="col-6">
                         <h2 style={{ margin: '10px 0' }}>{product.name}</h2>
-                        <h3 style={{ color: 'red' }}>{ parseInt(product.price).toLocaleString('en-US')} đ</h3>
+                        <h3 style={{ color: 'red' }}>{parseInt(product.price).toLocaleString('en-US')} đ</h3>
                         <h3 style={{ color: '#2f3133' }}>Size: {product.size}</h3>
 
 
